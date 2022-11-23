@@ -35,9 +35,9 @@ namespace Todo.Api.Test.ApplicationTest.Auth
             userRepo.Setup(repo => repo.DoesUsernameExist(username)).Returns(true);
             var authService = new AuthService(jwtTokenGenerator, userRepo.Object);
             //Act
-            var ex = Assert.Throws<Exception>(() => authService.Register(username, "", "", ""));
+            var act = () => authService.Register(username, "", "", "");
             //Assert
-            Assert.Equal("The username is already being used, try another one", ex.Message);
+            act.Should().Throw<Exception>().WithMessage("The username is already being used, try another one");
         }
 
         [Fact]
