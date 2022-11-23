@@ -19,9 +19,13 @@ namespace Todo.Infrastructure.Repository
         {
             return _users.Where(x=>x.Id == id).FirstOrDefault();
         }
-        public User? GetByUsername(string username)
+        public User? GetByUsernameAndPassword(string username, string password)
         {
-            return _users.Where(x=>x.UserName == username).FirstOrDefault();
+            return _users.Where(x=>x.Username == username && x.Password == password).FirstOrDefault();
+        }
+        public bool DoesUsernameExist(string username)
+        {
+            return _users.Where(x=>x.Username == username).Any();
         }
     }
 }

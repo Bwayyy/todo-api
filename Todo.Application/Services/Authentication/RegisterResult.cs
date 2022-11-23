@@ -1,3 +1,5 @@
+using Todo.Domain.Entity;
+
 public record RegisterResult(
-    Guid UserId
+    User User
 );

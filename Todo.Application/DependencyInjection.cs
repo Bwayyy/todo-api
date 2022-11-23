@@ -11,7 +11,10 @@ namespace Todo.Application
         {
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-            //TODO: Seperate Db Dependency Injection to another file
+            return services;
+        }
+        public static IServiceCollection AddDataAccess(this IServiceCollection services)
+        {
             services.AddSingleton<IUserRepository, UserRepository>();
             return services;
         }

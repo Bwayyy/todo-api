@@ -10,7 +10,8 @@ namespace Todo.Infrastructure.Repository
     public interface IUserRepository
     {
         public void Add(User user);
-        public User? GetByUsername(string username);
+        public User? GetByUsernameAndPassword(string username, string password);
+        public bool DoesUsernameExist(string username);
 
     }
 }
