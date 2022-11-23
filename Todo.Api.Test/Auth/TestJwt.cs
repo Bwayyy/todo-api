@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Todo.Application.Services.Authentication;
 using Todo.Controllers;
 using Todo.Infrastructure.Auth;
-
 namespace Todo.Api.Test.Auth
 {
     public class TestJwt
@@ -18,7 +17,7 @@ namespace Todo.Api.Test.Auth
         public void Jwt_ShouldHaveCorrectClaims()
         {
             //Arrange
-            IJwtTokenGenerator jwtTokenGenerator = new JwtTokenGenerator();
+            IJwtTokenGenerator jwtTokenGenerator = new JwtTokenGenerator(MockJwtConfig.config);
             Guid userId = Guid.NewGuid();
             string FirstName = "First";
             string LastName = "Last";

@@ -12,10 +12,13 @@ using Todo.Domain.Entity;
 using Todo.Infrastructure.Auth;
 using Todo.Infrastructure.Repository;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
+
 namespace Todo.Api.Test.ApplicationTest.Auth
 {
     public class AuthServiceTest
     {
+        private readonly JwtTokenGenerator jwtTokenGenerator = new JwtTokenGenerator(MockJwtConfig.config);
         private readonly User mockUser = new User()
         {
             Id = Guid.NewGuid(),
@@ -24,6 +27,7 @@ namespace Todo.Api.Test.ApplicationTest.Auth
             FirstName = "mockFirstName",
             LastName = "mockLastName"
         };
+            
         public AuthServiceTest() {
         }
         [Fact]
@@ -31,7 +35,7 @@ namespace Todo.Api.Test.ApplicationTest.Auth
         {
             //Arrange
             var userRepo = new Mock<IUserRepository>();
-            var authService = new AuthService(new JwtTokenGenerator(), userRepo.Object);
+            var authService = new AuthService(jwtTokenGenerator, userRepo.Object);
             //Act
             var result = authService.Register(mockUser.Username, mockUser.Password, mockUser.FirstName, mockUser.LastName);
             //Assert
@@ -44,7 +48,7 @@ namespace Todo.Api.Test.ApplicationTest.Auth
             var username = "mockusername";
             var userRepo = new Mock<IUserRepository>();
             userRepo.Setup(repo => repo.DoesUsernameExist(username)).Returns(true);
-            var authService = new AuthService(new JwtTokenGenerator(), userRepo.Object);
+            var authService = new AuthService(jwtTokenGenerator, userRepo.Object);
             //Act
             var ex = Assert.Throws<Exception>(() => authService.Register(username, "", "", ""));
             //Assert
@@ -57,7 +61,7 @@ namespace Todo.Api.Test.ApplicationTest.Auth
             //Arrange
             var userRepo = new Mock<IUserRepository>();
             userRepo.Setup(repo => repo.GetByUsernameAndPassword(mockUser.Username, mockUser.Password)).Returns(mockUser);
-            var authService = new AuthService(new JwtTokenGenerator(), userRepo.Object);
+            var authService = new AuthService(jwtTokenGenerator, userRepo.Object);
             //Act
             var result = authService.Authenticate(mockUser.Username, mockUser.Password);
             //Assert
@@ -70,7 +74,7 @@ namespace Todo.Api.Test.ApplicationTest.Auth
             //Arrange
             var userRepo = new Mock<IUserRepository>();
             userRepo.Setup(repo => repo.GetByUsernameAndPassword(mockUser.Username, mockUser.Password)).Returns(value: null);
-            var authService = new AuthService(new JwtTokenGenerator(), userRepo.Object);
+            var authService = new AuthService(jwtTokenGenerator, userRepo.Object);
             //Act
             Action act = () => authService.Authenticate(mockUser.Username, mockUser.Password);
             //Assert
