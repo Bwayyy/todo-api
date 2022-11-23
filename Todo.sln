@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Infrastructure", "Todo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Domain", "Todo.Domain\Todo.Domain.csproj", "{175B5012-284A-4F7D-99D1-3E1219DCE7CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Api.Test", "Todo.Api.Test\Todo.Api.Test.csproj", "{64C3A2F4-BBB7-48DC-A093-E1695A4C4381}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Test", "Todo.Api.Test\Todo.Test.csproj", "{64C3A2F4-BBB7-48DC-A093-E1695A4C4381}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

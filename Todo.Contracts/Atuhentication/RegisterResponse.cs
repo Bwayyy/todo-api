@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 namespace Todo.Contracts.Authentication
 {
     public record RegisterResponse
-    {
-    }
+    (
+        string Username,
+        string FirstName,
+        string LastName
+    );
 }
