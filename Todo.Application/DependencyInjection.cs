@@ -5,6 +5,7 @@ namespace Todo.Application
     using Microsoft.IdentityModel.Tokens;
     using Todo.Application.Services.Authentication;
     using Todo.Infrastructure.Auth;
+    using Todo.Infrastructure.Common.DatetimeProvider;
     using Todo.Infrastructure.Repository;
 
     public static class DependencyInjection
@@ -14,6 +15,7 @@ namespace Todo.Application
             services.Configure<JwtConfig>(configuration.GetSection(JwtConfig.SectionKey));
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            services.AddSingleton<IDatetimeProvider, DatetimeProvider>();
             return services;
         }
         public static IServiceCollection AddDataAccess(this IServiceCollection services)
@@ -21,5 +23,6 @@ namespace Todo.Application
             services.AddSingleton<IUserRepository, UserRepository>();
             return services;
         }
+
     }
 }

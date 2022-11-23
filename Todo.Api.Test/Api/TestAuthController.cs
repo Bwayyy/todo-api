@@ -6,7 +6,7 @@ using Todo.Contracts.Authentication;
 using Todo.Controllers;
 using Todo.Infrastructure.Repository;
 
-namespace Todo.Api.Test.Auth
+namespace Todo.Api.Test.ApiTest
 {
     public class TestAuthController
     {
@@ -18,7 +18,7 @@ namespace Todo.Api.Test.Auth
             authService.Setup(service => service.Register("", "", "", "")).Returns(new RegisterResult(new Domain.Entity.User()));
             var authController = new AuthController(authService.Object);
             //Act
-            var response = authController.Register(new RegisterRequest("username","password","first","last")) as IStatusCodeActionResult;
+            var response = authController.Register(new RegisterRequest("username", "password", "first", "last")) as IStatusCodeActionResult;
             //Assert
             Assert.Equal(200, response!.StatusCode);
         }
@@ -27,7 +27,7 @@ namespace Todo.Api.Test.Auth
         {
             //Arrange
             var authService = new Mock<IAuthService>();
-            authService.Setup(service => service.Authenticate("", "")).Returns(new AuthResult(Guid.NewGuid(),"token"));
+            authService.Setup(service => service.Authenticate("", "")).Returns(new AuthResult(Guid.NewGuid(), "token"));
             var authController = new AuthController(authService.Object);
             //Act
             var response = authController.Login(new LoginRequest("username", "password")) as IStatusCodeActionResult;

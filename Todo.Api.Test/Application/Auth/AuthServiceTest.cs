@@ -1,24 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Moq;
 using Todo.Application.Services.Authentication;
-using Todo.Contracts.Authentication;
-using Todo.Controllers;
 using Todo.Domain.Entity;
 using Todo.Infrastructure.Auth;
 using Todo.Infrastructure.Repository;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
+using Todo.Api.Test.CommonMocks;
 
 namespace Todo.Api.Test.ApplicationTest.Auth
 {
     public class AuthServiceTest
     {
-        private readonly JwtTokenGenerator jwtTokenGenerator = new JwtTokenGenerator(MockJwtConfig.config);
+        private readonly JwtTokenGenerator jwtTokenGenerator = new JwtTokenGenerator(MockJwtConfig.config, new MockDatetimeProvider());
         private readonly User mockUser = new User()
         {
             Id = Guid.NewGuid(),

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Todo.Infrastructure.Auth;
 
-namespace Todo.Infrastructure.Auth
+namespace Todo.Api.Test.CommonMocks
 {
     public static class MockJwtConfig
     {
