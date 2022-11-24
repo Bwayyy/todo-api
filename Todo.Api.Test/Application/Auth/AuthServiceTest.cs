@@ -6,12 +6,13 @@ using Todo.Infrastructure.Repository;
 using FluentAssertions;
 using Todo.Api.Test.CommonMocks;
 using Todo.Test.CommonMocks;
+using Todo.Test.Application.Auth;
 
 namespace Todo.Api.Test.ApplicationTest.Auth
 {
     public class AuthServiceTest
     {
-        private readonly JwtTokenGenerator jwtTokenGenerator = new JwtTokenGenerator(MockJwtConfig.config, new MockDatetimeProvider());
+        private readonly JwtTokenGenerator jwtTokenGenerator = new JwtTokenGenerator(AuthMocks.jwtConfig, new MockDatetimeProvider());
         public AuthServiceTest() {
         }
         [Fact]

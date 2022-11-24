@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Todo.Domain.Entity;
 using Todo.Infrastructure.Auth;
+using Todo.Test.CommonMocks;
 
-namespace Todo.Api.Test.CommonMocks
+namespace Todo.Test.Application.Auth
 {
-    public static class MockJwtConfig
+    public static class AuthMocks
     {
-        public static readonly IOptions<JwtConfig> config = Options.Create(
+        public static readonly IOptions<JwtConfig> jwtConfig = Options.Create(
             new JwtConfig
             {
                 ExpiryHour = 1,
@@ -18,5 +20,6 @@ namespace Todo.Api.Test.CommonMocks
                 Secret = "aaaa-bbbb-cccc-ddd"
             }
         );
+        public static readonly User user = MockUser.User;
     }
 }

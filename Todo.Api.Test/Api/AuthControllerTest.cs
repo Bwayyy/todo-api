@@ -9,7 +9,7 @@ using Todo.Test.CommonMocks;
 
 namespace Todo.Api.Test.ApiTest
 {
-    public class TestAuthController
+    public class AuthControllerTest
     {
         [Fact]
         public void Register_OnSuccess_ShouldOK()

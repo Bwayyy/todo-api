@@ -2,6 +2,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using Todo.Api.Test.CommonMocks;
 using Todo.Infrastructure.Auth;
+using Todo.Test.Application.Auth;
+
 namespace Todo.Api.Test.Infrastructure
 {
     public class TestJwt
@@ -11,7 +13,7 @@ namespace Todo.Api.Test.Infrastructure
         {
             //Arrange
             var mockDatetimeProvider = new MockDatetimeProvider();
-            IJwtTokenGenerator jwtTokenGenerator = new JwtTokenGenerator(MockJwtConfig.config, mockDatetimeProvider);
+            IJwtTokenGenerator jwtTokenGenerator = new JwtTokenGenerator(AuthMocks.jwtConfig, mockDatetimeProvider);
             Guid userId = Guid.NewGuid();
             string FirstName = "First";
             string LastName = "Last";
