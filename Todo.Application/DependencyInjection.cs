@@ -26,6 +26,8 @@ namespace Todo.Application
                 {
                     ValidateIssuer = true,
                     ValidIssuer = jwtConfig.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = jwtConfig.Audience,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret)),
                     ValidateLifetime = true,

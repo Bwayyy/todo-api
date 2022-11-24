@@ -34,13 +34,14 @@ namespace Todo.Infrastructure.Auth
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
                 new Claim(JwtRegisteredClaimNames.FamilyName, lastName),
-                new Claim(JwtRegisteredClaimNames.GivenName, firstName)
+                new Claim(JwtRegisteredClaimNames.GivenName, firstName),
             };
             var expireAt = _datetimeProvider.UtcNow.AddHours(_jwtConfig.ExpiryHour);
             var securityToken = new JwtSecurityToken(
                 claims: claims,
                 signingCredentials: signingCredentials,
                 issuer: _jwtConfig.Issuer,
+                audience: _jwtConfig.Audience,
                 expires: expireAt
                 );
             return new JwtSecurityTokenHandler().WriteToken(securityToken);

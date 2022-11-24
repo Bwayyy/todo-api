@@ -1,11 +1,9 @@
-using Mapster;
-using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Todo.Application.Services.Authentication;
 using Todo.Application.Services.Todo;
-using Todo.Contracts.Authentication;
 namespace Todo.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class TodoController : ControllerBase
