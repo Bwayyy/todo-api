@@ -1,4 +1,6 @@
-﻿using Todo.Domain.Entity;
+﻿using FluentResults;
+using Todo.Application.Errors.Auth;
+using Todo.Domain.Entity;
 using Todo.Infrastructure.Auth;
 using Todo.Infrastructure.Repository;
 
@@ -13,17 +15,17 @@ namespace Todo.Application.Services.Authentication
             _jwtTokenGenerator = jwtTokenGenerator;
             _userRepository= userRepository;
         }
-        public RegisterResult Register(string username, string password, string firstName, string lastName)
+        public Result<RegisterResult> Register(string username, string password, string firstName, string lastName)
         {
-            if (_userRepository.DoesUsernameExist(username)) throw new Exception("The username is already being used, try another one");
+            if (_userRepository.DoesUsernameExist(username)) return Result.Fail(new DuplicateUsernameError());
             var user = new User { FirstName= firstName, LastName = lastName, Username = username, Password = password };
             _userRepository.Add(user);
             return new RegisterResult(user);
         }
-        public AuthResult Authenticate(string username, string password)
+        public Result<AuthResult> Authenticate(string username, string password)
         {
             var user = _userRepository.GetByUsernameAndPassword(username, password);
-            if (user is null) throw new Exception("Invalid Credential");
+            if (user is null) return Result.Fail(new InvalidCredentialError());
             string token = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName);
             return new AuthResult(user.Id, token);
         }

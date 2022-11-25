@@ -7,6 +7,7 @@ using FluentAssertions;
 using Todo.Api.Test.CommonMocks;
 using Todo.Test.CommonMocks;
 using Todo.Test.Application.Auth;
+using Todo.Application.Errors.Auth;
 
 namespace Todo.Api.Test.ApplicationTest.Auth
 {
@@ -25,7 +26,11 @@ namespace Todo.Api.Test.ApplicationTest.Auth
             //Act
             var result = authService.Register(user.Username, user.Password, user.FirstName, user.LastName);
             //Assert
-            result.User.Should().BeEquivalentTo(user, options => options.Excluding(x=>x.Id));
+            result.IsSuccess.Should().BeTrue();
+            result.Value.User.Should()
+                .BeEquivalentTo(
+                user, 
+                options => options.Excluding(x=>x.Id));
         }
         [Fact]
         public void Register_WhenUserAlreadyExist_ShouldThrowException()
@@ -36,9 +41,10 @@ namespace Todo.Api.Test.ApplicationTest.Auth
             userRepo.Setup(repo => repo.DoesUsernameExist(username)).Returns(true);
             var authService = new AuthService(jwtTokenGenerator, userRepo.Object);
             //Act
-            var act = () => authService.Register(username, "", "", "");
+            var result = authService.Register(username, "", "", "");
             //Assert
-            act.Should().Throw<Exception>().WithMessage("The username is already being used, try another one");
+            result.IsFailed.Should().BeTrue();
+            result.Errors.First().Should().BeOfType<DuplicateUsernameError>();
         }
 
         [Fact]
@@ -52,8 +58,9 @@ namespace Todo.Api.Test.ApplicationTest.Auth
             //Act
             var result = authService.Authenticate(user.Username, user.Password);
             //Assert
-            result.Id.Should().Be(user.Id);
-            result.Token.Should().NotBeNullOrEmpty();
+            result.IsSuccess.Should().BeTrue();
+            result.Value.Id.Should().Be(user.Id);
+            result.Value.Token.Should().NotBeNullOrEmpty();
         }
         [Fact]
         public void Authenticate_WhenWrongCredential_ShouldThrowException()
@@ -64,10 +71,10 @@ namespace Todo.Api.Test.ApplicationTest.Auth
             userRepo.Setup(repo => repo.GetByUsernameAndPassword(user.Username, user.Password)).Returns(value: null);
             var authService = new AuthService(jwtTokenGenerator, userRepo.Object);
             //Act
-            Action act = () => authService.Authenticate(user.Username, user.Password);
+            var result = authService.Authenticate(user.Username, user.Password);
             //Assert
-            act.Should().Throw<Exception>()
-                .WithMessage("Invalid Credential");
+            result.IsFailed.Should().BeTrue();
+            result.Errors.First().Should().BeOfType<InvalidCredentialError>();
         }
     }
 }

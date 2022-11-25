@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentResults;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Todo.Application.Services.Authentication
 {
     public interface IAuthService
     {
-        public RegisterResult Register(string username, string password, string firstName, string lastName);
-        public AuthResult Authenticate(string username, string password);
+        public Result<RegisterResult> Register(string username, string password, string firstName, string lastName);
+        public Result<AuthResult> Authenticate(string username, string password);
     }
 }
