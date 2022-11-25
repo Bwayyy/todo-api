@@ -1,6 +1,9 @@
+using FluentAssertions;
+using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Moq;
+using Todo.Application.Errors.Auth;
 using Todo.Application.Services.Authentication;
 using Todo.Contracts.Authentication;
 using Todo.Controllers;
@@ -25,6 +28,21 @@ namespace Todo.Api.Test.ApiTest
             Assert.Equal(200, response!.StatusCode);
         }
         [Fact]
+        public void Register_OnDuplicateUser_ShouldReturnProblem()
+        {
+            //Arrange
+            var user = MockUser.User;
+            var authService = new Mock<IAuthService>();
+            authService.Setup(service => service.Register(user.Username, user.Password, user.FirstName, user.LastName)).Returns(Result.Fail(new DuplicateUsernameError()));
+            var authController = new AuthController(authService.Object);
+            //Act
+            var response = authController.Register(new RegisterRequest(user.Username, user.Password, user.FirstName, user.LastName)) as ObjectResult;
+            var value = response!.Value as ProblemDetails;
+            //Assert
+            value.Should().NotBeNull();
+            value?.Title.Should().Be(new DuplicateUsernameError().Message);
+        }
+        [Fact]
         public void Login_OnSuccess_ShouldOK()
         {
             //Arrange
@@ -36,6 +54,21 @@ namespace Todo.Api.Test.ApiTest
             var response = authController.Login(new LoginRequest(user.Username, user.Password)) as IStatusCodeActionResult;
             //Assert
             Assert.Equal(200, response!.StatusCode);
+        }
+        [Fact]
+        public void login_OnInvalidCredential_ShouldReturnProblem()
+        {
+            //Arrange
+            var user = MockUser.User;
+            var authService = new Mock<IAuthService>();
+            authService.Setup(service => service.Authenticate(user.Username, user.Password)).Returns(Result.Fail(new InvalidCredentialError()));
+            var authController = new AuthController(authService.Object);
+            //Act
+            var response = authController.Login(new LoginRequest(user.Username, user.Password)) as ObjectResult;
+            var value = response!.Value as ProblemDetails;
+            //Assert
+            value.Should().NotBeNull();
+            value!.Title.Should().Be(new InvalidCredentialError().Message);
         }
     }
 }

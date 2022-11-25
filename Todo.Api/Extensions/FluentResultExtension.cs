@@ -17,12 +17,12 @@ namespace Todo.Api.Extensions
             }
             else
             {
-                var problemDetials = result.Errors.Map((e) => new ProblemDetails { 
+                var problemDetial = result.Errors.Map((e) => new ProblemDetails { 
                     Title= e.Message,
                     Status = (int)statusCode,
                     Instance = "TodoApi"
-                });
-                return new ObjectResult(problemDetials);
+                }).First();
+                return new ObjectResult(problemDetial);
             }
         }
     }
