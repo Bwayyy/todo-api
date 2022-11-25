@@ -8,7 +8,7 @@ namespace Todo.Application.Services.Authentication
 {
     public record AuthResult
     (
-        Guid Id,
+        Guid UserId,
         string Token
     );
 }

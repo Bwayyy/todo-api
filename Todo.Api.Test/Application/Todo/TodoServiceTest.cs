@@ -6,25 +6,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Todo.Api.Test.CommonMock;
+using Todo.Application.Models.Todo;
 using Todo.Application.Services.Todo;
 using Todo.Domain.Entity;
+using Todo.Infrastructure.Common.DatetimeProvider;
 using Todo.Infrastructure.Repository;
+using Todo.Test.CommonMock;
 
 namespace Todo.Test.Application.Todo
 {
     public class TodoServiceTest
     {
+        private readonly IDatetimeProvider _datetimeProvider = new MockDatetimeProvider();
         [Fact]
         public void GetTodos_ShouldSuccess()
         {
             //Arrange
             var repo = new Mock<ITodoRepository>();
-            repo.Setup(x => x.List()).Returns(new List<TodoItem>());
-            var todoService = new TodoService(repo.Object);
+            repo.Setup(x => x.List()).Returns(It.IsAny<IQueryable<TodoItem>>());
+            var todoService = new TodoService(repo.Object, _datetimeProvider);
+            var queryParams = new TodoQueryParams();
             //Act
-            var act = () => todoService.GetTodos();
+            var result = todoService.GetTodos(queryParams);
             //Assert
-            act.Should().NotThrow();
+            result.IsSuccess.Should().BeTrue();
         }
         [Fact]
         public void AddTodo_ShouldSuccess()
@@ -32,11 +38,11 @@ namespace Todo.Test.Application.Todo
             //Arrange
             var repo = new Mock<ITodoRepository>();
             repo.Setup(x => x.Add(TodoMocks.todoItem)).Verifiable();
-            var todoService = new TodoService(repo.Object);
+            var todoService = new TodoService(repo.Object, _datetimeProvider);
             //Act
-            var act = () => todoService.AddTodos(TodoMocks.todoItemBody);
+            var result = todoService.AddTodos(CommonMocks.SessionData.UserId, TodoMocks.todoItemBody);
             //Assert
-            act.Should().NotThrow();
+            result.IsSuccess.Should().BeTrue();
         }
         [Fact]
         public void UpdateTodo_ShouldSuccess()
@@ -44,24 +50,23 @@ namespace Todo.Test.Application.Todo
             //Arrange
             var repo = new Mock<ITodoRepository>();
             repo.Setup(x => x.Update(TodoMocks.todoItem));
-            var todoService = new TodoService(repo.Object);
+            var todoService = new TodoService(repo.Object, _datetimeProvider);
             //Act
-            var act = () => todoService.UpdateTodo(TodoMocks.todoItem.Id, TodoMocks.todoItem.Body);
+            var result = todoService.UpdateTodo(CommonMocks.SessionData.UserId, TodoMocks.todoItem.Id, TodoMocks.todoItem.Body);
             //Assert
-            act.Should().NotThrow();
+            result.IsSuccess.Should().BeTrue();
         }
         [Fact]
         public void RemoveTodo_ShouldSuccess()
         {
             //Arrange
-            var todoId = Guid.NewGuid();
             var repo = new Mock<ITodoRepository>();
-            repo.Setup(x => x.Delete(todoId));
-            var todoService = new TodoService(repo.Object);
+            repo.Setup(x => x.Delete(TodoMocks.todoItem));
+            var todoService = new TodoService(repo.Object, _datetimeProvider);
             //Act
-            var act = () => todoService.RemoveTodo(todoId);
+            var result = todoService.RemoveTodo(TodoMocks.todoItem.Id);
             //Assert
-            act.Should().NotThrow();
+            result.IsSuccess.Should().BeTrue();
         }
     }
 }

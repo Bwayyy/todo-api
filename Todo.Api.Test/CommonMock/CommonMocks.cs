@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Todo.Domain.Entity;
+using Todo.Infrastructure.Auth;
 
-namespace Todo.Test.CommonMocks
+namespace Todo.Test.CommonMock
 {
-    public static class MockUser
+    public static class CommonMocks
     {
         public static User User = new User
         {
@@ -16,6 +17,10 @@ namespace Todo.Test.CommonMocks
             Password = "mockpassword",
             FirstName = "mockFirstName",
             LastName = "mockLastName"
+        };
+        public static SessionData SessionData = new SessionData
+        {
+            UserId = Guid.NewGuid(),
         };
     }
 }

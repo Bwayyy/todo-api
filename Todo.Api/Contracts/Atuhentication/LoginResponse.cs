@@ -9,6 +9,7 @@ namespace Todo.Contracts.Authentication
 {
     public record LoginResponse
     (
+        Guid UserId,
         string Token
     );
 }

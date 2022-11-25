@@ -13,8 +13,6 @@ namespace Todo.Infrastructure.Auth
 {
     public class JwtTokenGenerator : IJwtTokenGenerator
     {
-        //TODO: Use IDatetimeProvider to get the Datetime.Now
-        //private readonly IDatetimeProvider _datetimeProvider;
         private readonly JwtConfig _jwtConfig;
         private readonly IDatetimeProvider _datetimeProvider;
         public JwtTokenGenerator(IOptions<JwtConfig> config, IDatetimeProvider datetimeProvider)

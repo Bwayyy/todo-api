@@ -19,6 +19,7 @@ namespace Todo.Controllers
         [HttpPost("register")]
         public IActionResult Register(RegisterRequest request)
         {
+            
             var result = _authService.Register(request.Username, request.Password, request.FirstName, request.LastName)
                 .Map(result => result.User.Adapt<RegisterResponse>());
             return result.ToHttpResponse();

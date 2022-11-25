@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Todo.Api.Test.CommonMocks;
+using Todo.Api.Contracts.Todo;
+using Todo.Api.Test.CommonMock;
 using Todo.Domain.Entity;
 using Todo.Infrastructure.Common.DatetimeProvider;
-using Todo.Test.CommonMocks;
+using Todo.Test.CommonMock;
 
 namespace Todo.Test.Application.Todo
 {
@@ -23,10 +24,23 @@ namespace Todo.Test.Application.Todo
         {
             Id = Guid.NewGuid(),
             CreatedAt = datetimeProvider.UtcNow,
-            CreatedBy = MockUser.User.Id,
+            CreatedBy = CommonMocks.User.Id,
             UpdatedAt = datetimeProvider.UtcNow,
-            UpdatedBy = MockUser.User.Id,
+            UpdatedBy = CommonMocks.User.Id,
             Body = todoItemBody
         };
+        public static AddTodoRequest addTodoReqeust = new AddTodoRequest
+        (
+            "AddTodoReqeust Title",
+            "AddTodoReqeust Description",
+            TodoItemStatus.InProgress,
+            datetimeProvider.UtcNow.AddDays(30)
+        );
+        public static UpdateTodoRequest updateTodoRequest = new UpdateTodoRequest(
+            "updateTodoRequest Title",
+            "updateTodoRequest Description",
+            TodoItemStatus.Completed,
+            datetimeProvider.UtcNow.AddDays(60)
+        );
     }
 }

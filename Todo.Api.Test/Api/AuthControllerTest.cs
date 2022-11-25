@@ -8,7 +8,7 @@ using Todo.Application.Services.Authentication;
 using Todo.Contracts.Authentication;
 using Todo.Controllers;
 using Todo.Infrastructure.Repository;
-using Todo.Test.CommonMocks;
+using Todo.Test.CommonMock;
 
 namespace Todo.Api.Test.ApiTest
 {
@@ -18,7 +18,7 @@ namespace Todo.Api.Test.ApiTest
         public void Register_OnSuccess_ShouldOK()
         {
             //Arrange
-            var user = MockUser.User;
+            var user = CommonMocks.User;
             var authService = new Mock<IAuthService>();
             authService.Setup(service => service.Register(user.Username, user.Password, user.FirstName, user.LastName)).Returns(new RegisterResult(new Domain.Entity.User()));
             var authController = new AuthController(authService.Object);
@@ -31,7 +31,7 @@ namespace Todo.Api.Test.ApiTest
         public void Register_OnDuplicateUser_ShouldReturnProblem()
         {
             //Arrange
-            var user = MockUser.User;
+            var user = CommonMocks.User;
             var authService = new Mock<IAuthService>();
             authService.Setup(service => service.Register(user.Username, user.Password, user.FirstName, user.LastName)).Returns(Result.Fail(new DuplicateUsernameError()));
             var authController = new AuthController(authService.Object);
@@ -46,7 +46,7 @@ namespace Todo.Api.Test.ApiTest
         public void Login_OnSuccess_ShouldOK()
         {
             //Arrange
-            var user = MockUser.User;
+            var user = CommonMocks.User;
             var authService = new Mock<IAuthService>();
             authService.Setup(service => service.Authenticate(user.Username, user.Password)).Returns(new AuthResult(Guid.NewGuid(), "token"));
             var authController = new AuthController(authService.Object);
@@ -59,7 +59,7 @@ namespace Todo.Api.Test.ApiTest
         public void login_OnInvalidCredential_ShouldReturnProblem()
         {
             //Arrange
-            var user = MockUser.User;
+            var user = CommonMocks.User;
             var authService = new Mock<IAuthService>();
             authService.Setup(service => service.Authenticate(user.Username, user.Password)).Returns(Result.Fail(new InvalidCredentialError()));
             var authController = new AuthController(authService.Object);

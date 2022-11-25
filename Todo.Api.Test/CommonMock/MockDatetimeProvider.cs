@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Todo.Infrastructure.Common.DatetimeProvider;
 
-namespace Todo.Api.Test.CommonMocks
+namespace Todo.Api.Test.CommonMock
 {
     public class MockDatetimeProvider : IDatetimeProvider
     {

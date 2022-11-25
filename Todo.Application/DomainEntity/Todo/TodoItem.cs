@@ -20,6 +20,7 @@ namespace Todo.Domain.Entity
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public TodoItemStatus Status { get; set; } = TodoItemStatus.Pending;
+        public DateTime? DueDate { get; set; }
     }
     public enum TodoItemStatus
     {

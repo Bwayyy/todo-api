@@ -9,10 +9,10 @@ namespace Todo.Infrastructure.Repository
 {
     public interface ITodoRepository
     {
-        public List<TodoItem> List();
+        public IQueryable<TodoItem> List();
         public void Add(TodoItem todoItem);
         public void Update(TodoItem todoItem);
-        public void Delete(Guid id);
-
+        public void Delete(TodoItem todoItem);
+        public TodoItem Get(Guid id);
     }
 }

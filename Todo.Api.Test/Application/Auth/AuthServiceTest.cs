@@ -4,10 +4,10 @@ using Todo.Domain.Entity;
 using Todo.Infrastructure.Auth;
 using Todo.Infrastructure.Repository;
 using FluentAssertions;
-using Todo.Api.Test.CommonMocks;
-using Todo.Test.CommonMocks;
 using Todo.Test.Application.Auth;
 using Todo.Application.Errors.Auth;
+using Todo.Api.Test.CommonMock;
+using Todo.Test.CommonMock;
 
 namespace Todo.Api.Test.ApplicationTest.Auth
 {
@@ -20,7 +20,7 @@ namespace Todo.Api.Test.ApplicationTest.Auth
         public void Register_ShouldSuccess()
         {
             //Arrange
-            var user = MockUser.User;
+            var user = CommonMocks.User;
             var userRepo = new Mock<IUserRepository>();
             var authService = new AuthService(jwtTokenGenerator, userRepo.Object);
             //Act
@@ -51,7 +51,7 @@ namespace Todo.Api.Test.ApplicationTest.Auth
         public void Authenticate_ShouldSuccess()
         {
             //Arrange
-            var user = MockUser.User;
+            var user = CommonMocks.User;
             var userRepo = new Mock<IUserRepository>();
             userRepo.Setup(repo => repo.GetByUsernameAndPassword(user.Username, user.Password)).Returns(user);
             var authService = new AuthService(jwtTokenGenerator, userRepo.Object);
@@ -59,14 +59,14 @@ namespace Todo.Api.Test.ApplicationTest.Auth
             var result = authService.Authenticate(user.Username, user.Password);
             //Assert
             result.IsSuccess.Should().BeTrue();
-            result.Value.Id.Should().Be(user.Id);
+            result.Value.UserId.Should().Be(user.Id);
             result.Value.Token.Should().NotBeNullOrEmpty();
         }
         [Fact]
         public void Authenticate_WhenWrongCredential_ShouldThrowException()
         {
             //Arrange
-            var user = MockUser.User;
+            var user = CommonMocks.User;
             var userRepo = new Mock<IUserRepository>();
             userRepo.Setup(repo => repo.GetByUsernameAndPassword(user.Username, user.Password)).Returns(value: null);
             var authService = new AuthService(jwtTokenGenerator, userRepo.Object);

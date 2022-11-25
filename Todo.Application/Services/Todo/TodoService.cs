@@ -1,9 +1,13 @@
-﻿using System;
+﻿using FluentResults;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Todo.Application.Errors.Todo;
+using Todo.Application.Models.Todo;
 using Todo.Domain.Entity;
+using Todo.Infrastructure.Common.DatetimeProvider;
 using Todo.Infrastructure.Repository;
 
 namespace Todo.Application.Services.Todo
@@ -11,28 +15,60 @@ namespace Todo.Application.Services.Todo
     public class TodoService : ITodoService
     {
         private readonly ITodoRepository _todoRepository;
-        public TodoService(ITodoRepository todoRepository) { 
+        private readonly IDatetimeProvider _dateTimeProvider;
+        public TodoService(ITodoRepository todoRepository, IDatetimeProvider datetimeProvider) { 
             _todoRepository = todoRepository;
+            _dateTimeProvider = datetimeProvider;
         }
 
-        public void AddTodos(TodoItemBody todoItemBody)
+        public Result<TodoItem> AddTodos(Guid userId, TodoItemBody todoItemBody)
         {
-            throw new NotImplementedException();
+            var todo = new TodoItem
+            {
+                Body = todoItemBody,
+                CreatedBy = userId,
+                CreatedAt = _dateTimeProvider.UtcNow,
+            };
+            _todoRepository.Add(todo);
+            return todo;
         }
 
-        public List<TodoItem> GetTodos()
+        public Result<List<TodoItem>> GetTodos(TodoQueryParams queryParams)
         {
-            throw new NotImplementedException();
+            var todosQuery = _todoRepository.List();
+            try
+            {
+                var queryResult = queryParams.Query(todosQuery);
+                return queryResult;
+            }
+            catch(Exception ex)
+            {
+                return Result.Fail(new InvalidQueryError());
+            }
         }
 
-        public void RemoveTodo(Guid id)
+        public Result<TodoItem> UpdateTodo(Guid userId, Guid todoId, TodoItemBody todoItemBody)
         {
-            throw new NotImplementedException();
+            var todo = _todoRepository.Get(todoId);
+            if (todo is null)
+            {
+                return Result.Fail(new ResourceNotFoundError());
+            }
+            todo.Body= todoItemBody;
+            todo.UpdatedBy = userId;
+            todo.UpdatedAt = _dateTimeProvider.UtcNow;
+            _todoRepository.Update(todo);
+            return todo;
         }
-
-        public void UpdateTodo(Guid id, TodoItemBody todoItemBody)
+        public Result<bool> RemoveTodo(Guid id)
         {
-            throw new NotImplementedException();
+            var todo = _todoRepository.Get(id);
+            if (todo is null)
+            {
+                return Result.Fail(new ResourceNotFoundError());
+            }
+            _todoRepository.Update(todo);
+            return true;
         }
     }
 }

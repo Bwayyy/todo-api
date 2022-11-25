@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Todo.Domain.Entity;
 using Todo.Infrastructure.Auth;
-using Todo.Test.CommonMocks;
+using Todo.Test.CommonMock;
 
 namespace Todo.Test.Application.Auth
 {
@@ -20,6 +20,6 @@ namespace Todo.Test.Application.Auth
                 Secret = "aaaa-bbbb-cccc-ddd"
             }
         );
-        public static readonly User user = MockUser.User;
+        public static readonly User user = CommonMocks.User;
     }
 }

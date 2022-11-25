@@ -1,10 +1,13 @@
 namespace Todo.Application
 {
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
+    using Microsoft.IdentityModel.JsonWebTokens;
     using Microsoft.IdentityModel.Tokens;
+    using System.Security.Claims;
     using System.Text;
     using Todo.Application.Services.Authentication;
     using Todo.Application.Services.Todo;
@@ -57,5 +60,15 @@ namespace Todo.Application
             return services;
         }
 
+        public static IServiceCollection AddSessionData(this IServiceCollection services)
+        {
+            services.AddScoped<SessionData>((services) => {
+                var httpContextAccessor = services.GetService<IHttpContextAccessor>();
+                //The userId should be in JwtRegisteredClaimNames.Sub, but the Mircrosft security library convert Sub to NameId when reading the token.
+                var userId = httpContextAccessor!.HttpContext!.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+                return new SessionData { UserId = Guid.Parse(userId) };
+            });
+            return services;
+        }
     }
 }
