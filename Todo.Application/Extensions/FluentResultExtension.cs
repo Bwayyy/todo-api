@@ -24,7 +24,7 @@ namespace Todo.Api.Extensions
         }
         private static ObjectResult handleErrors(List<IError> errors, HttpStatusCode statusCode)
         {
-            var problemDetial = errors.Map((e) => new ProblemDetails
+            var problemDetial = errors.Select((e) => new ProblemDetails
             {
                 Title = e.Message,
                 Status = (int)statusCode,
