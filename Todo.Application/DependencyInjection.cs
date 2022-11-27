@@ -9,6 +9,7 @@ namespace Todo.Application
     using Microsoft.IdentityModel.Tokens;
     using System.Security.Claims;
     using System.Text;
+    using Todo.Application.Infrastructure.Repository;
     using Todo.Application.Services.Authentication;
     using Todo.Application.Services.Todo;
     using Todo.Infrastructure.Auth;
@@ -51,12 +52,14 @@ namespace Todo.Application
         {
             services.AddSingleton<IDatetimeProvider, DatetimeProvider>();
             services.AddScoped<ITodoService, TodoService>();
+            services.AddScoped<ITodoAuthorizationService, TodoAuthorizationService>();
             return services;
         }
         public static IServiceCollection AddDataAccess(this IServiceCollection services)
         {
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<ITodoRepository, TodoRepository>();
+            services.AddSingleton<ITodoAccessRightRepo, TodoAccessRightRepo>();
             return services;
         }
 
