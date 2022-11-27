@@ -1,11 +1,4 @@
-﻿using LanguageExt;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Todo.Application.Models.Shared;
-using Todo.Domain.Entity;
+﻿using Todo.Domain.Entity;
 
 namespace Todo.Application.Models.Todo
 {
@@ -14,40 +7,40 @@ namespace Todo.Application.Models.Todo
         public TodoListFilter Filters { get; init; } = new TodoListFilter();
         public string SortBy { get; init; } = "Title";
         public string SortDirection { get; init; } = "asc";
-        public List<TodoItem> Query(IQueryable<TodoItem> todos)
+        public List<TodoItem> Query(List<TodoItem> todos)
         {
             var todoList= DoFiltering(todos).ToList();
             todoList = DoSorting(todoList);
             return todoList;
         }
-        private IQueryable<TodoItem> DoFiltering(IQueryable<TodoItem> todos)
+        private List<TodoItem> DoFiltering(List<TodoItem> todos)
         {
             if (string.IsNullOrEmpty(Filters.Title) == false)
             {
-                todos = todos.Where(x => x.Body.Title == Filters.Title);
+                todos = todos.Where(x => x.Body.Title == Filters.Title).ToList();
             }
             if(string.IsNullOrEmpty(Filters.Description) == false)
             {
-                todos = todos.Where(x=>x.Body.Description== Filters.Description);
+                todos = todos.Where(x=>x.Body.Description== Filters.Description).ToList();
             }
             if(Filters.Status.HasValue)
             {
-                todos = todos.Where(x=>x.Body.Status == Filters.Status);
+                todos = todos.Where(x=>x.Body.Status == Filters.Status).ToList();
             }
             return todos;
         }
         private List<TodoItem> DoSorting(List<TodoItem> todos)
         {
-            if (string.IsNullOrEmpty(SortBy) == false)
+            if (string.IsNullOrEmpty(SortBy)) return todos;
+            var comparer = new TodoItemComparerFactory().GetComparer(SortBy.ToLower());
+            if (comparer is null) throw new Exception($"Can't not find a comparer for field {SortBy}");
+            if (SortDirection == "asc")
             {
-                if (SortDirection == "asc")
-                {
-                    todos = todos.OrderBy(x => x.GetType().GetProperty(SortBy)).ToList();
-                }
-                else
-                {
-                    todos = todos.OrderBy(x => x.GetType().GetProperty(SortBy)).ToList();
-                }
+                todos = todos.Order(comparer).ToList();
+            }
+            else
+            {
+                todos = todos.OrderDescending(comparer).ToList();
             }
             return todos;
         }

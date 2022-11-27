@@ -1,9 +1,5 @@
 ﻿using FluentResults;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Todo.Application.DomainEntity.Todo;
 using Todo.Application.Errors.Todo;
 using Todo.Application.Models.Todo;
 using Todo.Domain.Entity;
@@ -16,9 +12,11 @@ namespace Todo.Application.Services.Todo
     {
         private readonly ITodoRepository _todoRepository;
         private readonly IDatetimeProvider _dateTimeProvider;
-        public TodoService(ITodoRepository todoRepository, IDatetimeProvider datetimeProvider) { 
+        private readonly ITodoAuthorizationService _todoAuthorizationService;
+        public TodoService(ITodoRepository todoRepository, IDatetimeProvider datetimeProvider, ITodoAuthorizationService todoAuthorizationService) { 
             _todoRepository = todoRepository;
             _dateTimeProvider = datetimeProvider;
+            _todoAuthorizationService = todoAuthorizationService;
         }
 
         public Result<TodoItem> AddTodo(Guid userId, TodoItemBody todoItemBody)
@@ -33,15 +31,17 @@ namespace Todo.Application.Services.Todo
             return todo;
         }
 
-        public Result<List<TodoItem>> GetTodos(TodoQueryParams queryParams)
+        public Result<List<TodoItem>> GetTodos(Guid userId, TodoQueryParams queryParams)
         {
-            var todosQuery = _todoRepository.List();
+            var ownedTodos = _todoRepository.GetByUserId(userId);
+            var accessRights = _todoAuthorizationService.GetAccessRights(userId).ValueOrDefault;
+            var authorizedTodos = _todoRepository.Get(accessRights.Select(x => x.TodoId).ToList());
             try
             {
-                var queryResult = queryParams.Query(todosQuery);
+                var queryResult = queryParams.Query(ownedTodos.Concat(authorizedTodos).ToList());
                 return queryResult;
             }
-            catch(Exception ex)
+            catch
             {
                 return Result.Fail(new InvalidQueryError());
             }
@@ -49,26 +49,50 @@ namespace Todo.Application.Services.Todo
 
         public Result<TodoItem> UpdateTodo(Guid userId, Guid todoId, TodoItemBody todoItemBody)
         {
-            var todo = _todoRepository.Get(todoId);
-            if (todo is null)
-            {
-                return Result.Fail(new ResourceNotFoundError());
-            }
+            var getTodoResult = getTodo(todoId);
+            if (getTodoResult.IsFailed) return getTodoResult;
+
+            var todo = getTodoResult.Value;
+            var accessValidationResult = _todoAuthorizationService.ValidateAccess(
+                userId, 
+                todoId, 
+                new List<int> { (int)AccessRight.Write}
+                );
+
+            if (accessValidationResult.IsFailed) return accessValidationResult;
             todo.Body= todoItemBody;
             todo.UpdatedBy = userId;
             todo.UpdatedAt = _dateTimeProvider.UtcNow;
             _todoRepository.Update(todo);
             return todo;
         }
-        public Result<bool> RemoveTodo(Guid id)
+        public Result RemoveTodo(Guid userId, Guid id)
         {
-            var todo = _todoRepository.Get(id);
-            if (todo is null)
+            var getTodoResult = GetTodoByOwnerOnly(userId, id);
+            if (getTodoResult.IsFailed)
             {
-                return Result.Fail(new ResourceNotFoundError());
+                return Result.Fail(getTodoResult.Errors);
             }
-            _todoRepository.Update(todo);
-            return true;
+            var todo = getTodoResult.Value;
+            _todoRepository.Delete(todo);
+            return Result.Ok();
+        }
+        public Result<TodoItem> GetTodoByOwnerOnly(Guid userId, Guid todoId)
+        {
+            var result = getTodo(todoId);
+            if (result.IsSuccess)
+            {
+                var todo = result.Value;
+                if (todo!.CreatedBy != userId) return Result.Fail(new UserIsNotTodoOwnerError());
+                return todo;
+            }
+            return result;
+        }
+        private Result<TodoItem> getTodo(Guid todoId)
+        {
+            var todo = _todoRepository.Get(todoId);
+            if (todo is null) return Result.Fail(new ResourceNotFoundError());
+            return todo;
         }
     }
 }

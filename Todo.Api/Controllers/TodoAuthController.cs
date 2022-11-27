@@ -9,24 +9,31 @@ namespace Todo.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("todos/{todoId}/auth")]
+    [Route("todos/{todoId}/authorize")]
     public class TodoAuthController : ControllerBase
     {
         private SessionData _session;
+        private ITodoService _todoService;
         private ITodoAuthorizationService _todoAuthorizationService;
-        public TodoAuthController(SessionData session, ITodoAuthorizationService todoAuthorizationService) {
+        public TodoAuthController(SessionData session, ITodoService todoService, ITodoAuthorizationService todoAuthorizationService)
+        {
             this._session = session;
+            this._todoService = todoService;
             this._todoAuthorizationService = todoAuthorizationService;
         }
         [HttpPost]
         public IActionResult AuthorizeUser([FromRoute] Guid todoId, [FromBody] AddTodoAuthorizationRequest request)
         {
-            return _todoAuthorizationService.AuthorizeUser(
-                _session.UserId, 
-                request.ToUserId, 
-                todoId,
-                request.Rights)
-                .ToHttpResponse();
+            var getTodoResult = _todoService.GetTodoByOwnerOnly(_session.UserId,todoId);
+            if(getTodoResult.IsSuccess)
+            {
+                return _todoAuthorizationService.AuthorizeUser(
+                    request.ToUserId, 
+                    todoId,
+                    request.Rights)
+                    .ToHttpResponse();
+            }
+            return getTodoResult.ToHttpResponse();
         }
     }
 }

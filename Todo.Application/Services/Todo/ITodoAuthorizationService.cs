@@ -1,15 +1,13 @@
 ﻿using FluentResults;
-using LanguageExt.ClassInstances.Pred;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Todo.Application.DomainEntity.Todo;
 
 namespace Todo.Application.Services.Todo
 {
     public interface ITodoAuthorizationService
     {
-        public Result<bool> AuthorizeUser(Guid fromUserId, Guid toUserId, Guid todoId, List<int> rights);
+        public Result<TodoAccessRight> AuthorizeUser(Guid toUserId, Guid todoId, List<int> rights);
+        public Result<List<TodoAccessRight>> GetAccessRights(Guid userId);
+        public Result ValidateAccess(Guid userId, Guid todoId, List<int> rights);
+        public TodoAccessRight? GetAccessRight(Guid userId, Guid todoId);
     }
 }

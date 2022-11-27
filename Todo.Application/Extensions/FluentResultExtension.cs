@@ -1,9 +1,6 @@
 ﻿using FluentResults;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Net;
-using System.Runtime.CompilerServices;
 
 namespace Todo.Api.Extensions
 {
@@ -15,15 +12,25 @@ namespace Todo.Api.Extensions
             {
                 return new OkObjectResult(result.Value);
             }
-            else
+            return handleErrors(result.Errors, statusCode);
+        }
+        public static IActionResult ToHttpResponse(this Result result, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
+        {
+            if (result.IsSuccess)
             {
-                var problemDetial = result.Errors.Map((e) => new ProblemDetails { 
-                    Title= e.Message,
-                    Status = (int)statusCode,
-                    Instance = "TodoApi"
-                }).First();
-                return new ObjectResult(problemDetial);
+                return new OkResult();
             }
+            return handleErrors(result.Errors, statusCode);
+        }
+        private static ObjectResult handleErrors(List<IError> errors, HttpStatusCode statusCode)
+        {
+            var problemDetial = errors.Map((e) => new ProblemDetails
+            {
+                Title = e.Message,
+                Status = (int)statusCode,
+                Instance = "TodoApi"
+            }).First();
+            return new ObjectResult(problemDetial);
         }
     }
 }

@@ -11,9 +11,10 @@ namespace Todo.Application.Services.Todo
 {
     public interface ITodoService
     {
-        public Result<List<TodoItem>> GetTodos(TodoQueryParams queryParams);
+        public Result<TodoItem> GetTodoByOwnerOnly(Guid userId, Guid TodoId);
+        public Result<List<TodoItem>> GetTodos(Guid userId, TodoQueryParams queryParams);
         public Result<TodoItem> AddTodo(Guid userId, TodoItemBody todoItemBody);
         public Result<TodoItem> UpdateTodo(Guid userId, Guid todoid, TodoItemBody todoItemBody);
-        public Result<bool> RemoveTodo(Guid todoId);
+        public Result RemoveTodo(Guid userId, Guid todoId);
     }
 }

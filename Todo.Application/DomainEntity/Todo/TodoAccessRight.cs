@@ -8,6 +8,7 @@ namespace Todo.Application.DomainEntity.Todo
 {
     public class TodoAccessRight
     {
+        public Guid Id { get; set; } = Guid.NewGuid();
         public Guid TodoId { get; set; }
         public Guid UserId { get; set; }
         public List<AccessRight> Rights { get; set; } = new List<AccessRight>();

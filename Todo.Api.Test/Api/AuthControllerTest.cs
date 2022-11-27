@@ -10,7 +10,7 @@ using Todo.Controllers;
 using Todo.Infrastructure.Repository;
 using Todo.Test.CommonMock;
 
-namespace Todo.Api.Test.ApiTest
+namespace Todo.Test.Api
 {
     public class AuthControllerTest
     {

@@ -4,17 +4,16 @@ using Todo.Domain.Entity;
 using Todo.Infrastructure.Auth;
 using Todo.Infrastructure.Repository;
 using FluentAssertions;
-using Todo.Test.Application.Auth;
 using Todo.Application.Errors.Auth;
-using Todo.Api.Test.CommonMock;
 using Todo.Test.CommonMock;
 
-namespace Todo.Api.Test.ApplicationTest.Auth
+namespace Todo.Test.Application.Auth
 {
     public class AuthServiceTest
     {
         private readonly JwtTokenGenerator jwtTokenGenerator = new JwtTokenGenerator(AuthMocks.jwtConfig, new MockDatetimeProvider());
-        public AuthServiceTest() {
+        public AuthServiceTest()
+        {
         }
         [Fact]
         public void Register_ShouldSuccess()
@@ -29,8 +28,8 @@ namespace Todo.Api.Test.ApplicationTest.Auth
             result.IsSuccess.Should().BeTrue();
             result.Value.User.Should()
                 .BeEquivalentTo(
-                user, 
-                options => options.Excluding(x=>x.Id));
+                user,
+                options => options.Excluding(x => x.Id));
         }
         [Fact]
         public void Register_WhenUserAlreadyExist_ShouldThrowException()

@@ -25,11 +25,14 @@ namespace Todo.Infrastructure.Repository
             return _todos.First(x=>x.Id == id);
         }
 
-        public IQueryable<TodoItem> List()
+        public List<TodoItem> GetByUserId(Guid userId)
         {
-            return this._todos.AsQueryable();
+            return this._todos.Where(x=>x.CreatedBy == userId).ToList();
         }
-
+        public List<TodoItem> Get(List<Guid> ids)
+        {
+            return this._todos.Where(x=>ids.Contains(x.Id)).ToList();
+        }
         public void Update(TodoItem todoItem)
         {
             var item = _todos.First(x=>x.Id ==todoItem.Id);

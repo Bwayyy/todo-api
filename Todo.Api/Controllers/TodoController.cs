@@ -33,7 +33,7 @@ namespace Todo.Controllers
                 SortDirection = request.SortDirection ?? "",
                 Filters = request.Adapt<TodoListFilter>()
             };
-            var result= _todoService.GetTodos(queryParams);
+            var result= _todoService.GetTodos(_session.UserId, queryParams);
             return result.ToHttpResponse();
         }
         [HttpPost]
@@ -53,7 +53,7 @@ namespace Todo.Controllers
         [HttpDelete("{todoId}")]
         public IActionResult DeleteTodo([FromRoute]Guid todoId)
         {
-            return _todoService.RemoveTodo(todoId).ToHttpResponse();   
+            return _todoService.RemoveTodo(_session.UserId, todoId).ToHttpResponse();   
         }
     }
 }

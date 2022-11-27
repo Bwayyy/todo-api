@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
 using System.IdentityModel.Tokens.Jwt;
-using Todo.Api.Test.CommonMock;
 using Todo.Infrastructure.Auth;
 using Todo.Test.Application.Auth;
+using Todo.Test.CommonMock;
 
-namespace Todo.Api.Test.Infrastructure
+namespace Todo.Test.Infrastructure
 {
     public class TestJwt
     {

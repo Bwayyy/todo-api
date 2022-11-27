@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Todo.Api.Contracts.Todo;
-using Todo.Api.Test.CommonMock;
+﻿using Todo.Api.Contracts.Todo;
 using Todo.Domain.Entity;
 using Todo.Infrastructure.Common.DatetimeProvider;
 using Todo.Test.CommonMock;

@@ -11,9 +11,20 @@ namespace Todo.Application.Infrastructure.Repository
     public class TodoAccessRightRepo : ITodoAccessRightRepo
     {
         private readonly List<TodoAccessRight> _accessRights = new List<TodoAccessRight>();
-        public TodoAccessRight? GetByTargetUser(Guid todoId, Guid targetUserId)
+
+        public void Add(TodoAccessRight value)
+        {
+            _accessRights.Add(value);
+        }
+
+        public TodoAccessRight? GetByIdAndTargetUser(Guid todoId, Guid targetUserId)
         {
             return _accessRights.FirstOrDefault(x => x.TodoId == todoId && x.UserId == targetUserId);
+        }
+
+        public List<TodoAccessRight> GetByTargetUser(Guid userId)
+        {
+            return _accessRights.Where(x=>x.UserId== userId).ToList();
         }
     }
 }

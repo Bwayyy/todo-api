@@ -10,6 +10,8 @@ namespace Todo.Application.Infrastructure.Repository
 {
     public interface ITodoAccessRightRepo
     {
-        public TodoAccessRight? GetByTargetUser(Guid todoId, Guid targetUserId);
+        public void Add(TodoAccessRight value);
+        public TodoAccessRight? GetByIdAndTargetUser(Guid todoId, Guid targetUserId);
+        public List<TodoAccessRight> GetByTargetUser(Guid userId);
     }
 }

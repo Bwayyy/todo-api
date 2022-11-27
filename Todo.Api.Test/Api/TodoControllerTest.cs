@@ -27,7 +27,7 @@ namespace Todo.Test.Api
             var todoService = new Mock<ITodoService>();
             var mockRequest = new GetTodosRequest();
             var queryParams = new TodoQueryParams();
-            todoService.Setup(x=>x.GetTodos(It.IsAny<TodoQueryParams>())).Returns(Result.Ok(new List<TodoItem>()));
+            todoService.Setup(x=>x.GetTodos(It.IsAny<Guid>(), It.IsAny<TodoQueryParams>())).Returns(Result.Ok(new List<TodoItem>()));
             var controller = new TodoController(todoService.Object, CommonMocks.SessionData);
             //Act
             var result = controller.GetTodos(mockRequest) as IStatusCodeActionResult;
@@ -68,8 +68,8 @@ namespace Todo.Test.Api
             //Arrange
             var todoService = new Mock<ITodoService>();
             var controller = new TodoController(todoService.Object, CommonMocks.SessionData);
-            todoService.Setup(service => service.RemoveTodo(It.IsAny<Guid>()))
-               .Returns(Result.Ok(true));
+            todoService.Setup(service => service.RemoveTodo(It.IsAny<Guid>(), It.IsAny<Guid>()))
+               .Returns(Result.Ok());
             //Act
             var result = controller.DeleteTodo(TodoMocks.todoItem.Id) as IStatusCodeActionResult;
             //Assert
