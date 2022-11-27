@@ -13,6 +13,6 @@ namespace Todo.Infrastructure.Repository
         public void Add(TodoItem todoItem);
         public void Update(TodoItem todoItem);
         public void Delete(TodoItem todoItem);
-        public TodoItem Get(Guid id);
+        public TodoItem? Get(Guid id);
     }
 }

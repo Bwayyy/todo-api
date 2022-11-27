@@ -40,7 +40,7 @@ namespace Todo.Controllers
         public IActionResult AddTodo([FromBody] AddTodoRequest request)
         {
             var body = request.Adapt<TodoItemBody>();
-            var result = _todoService.AddTodos(_session.UserId, body);
+            var result = _todoService.AddTodo(_session.UserId, body);
             return result.ToHttpResponse();
         }
         [HttpPut("{todoId}")]

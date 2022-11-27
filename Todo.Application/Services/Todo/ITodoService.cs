@@ -12,7 +12,7 @@ namespace Todo.Application.Services.Todo
     public interface ITodoService
     {
         public Result<List<TodoItem>> GetTodos(TodoQueryParams queryParams);
-        public Result<TodoItem> AddTodos(Guid userId, TodoItemBody todoItemBody);
+        public Result<TodoItem> AddTodo(Guid userId, TodoItemBody todoItemBody);
         public Result<TodoItem> UpdateTodo(Guid userId, Guid todoid, TodoItemBody todoItemBody);
         public Result<bool> RemoveTodo(Guid todoId);
     }

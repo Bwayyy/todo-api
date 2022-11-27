@@ -20,7 +20,7 @@ namespace Todo.Infrastructure.Repository
             _todos.Remove(todoItem);
         }
 
-        public TodoItem Get(Guid id)
+        public TodoItem? Get(Guid id)
         {
             return _todos.First(x=>x.Id == id);
         }

@@ -21,7 +21,7 @@ namespace Todo.Application.Services.Todo
             _dateTimeProvider = datetimeProvider;
         }
 
-        public Result<TodoItem> AddTodos(Guid userId, TodoItemBody todoItemBody)
+        public Result<TodoItem> AddTodo(Guid userId, TodoItemBody todoItemBody)
         {
             var todo = new TodoItem
             {

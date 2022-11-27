@@ -36,11 +36,12 @@ namespace Todo.Test.Api
             result?.StatusCode.Should().Be(200);
         }
         [Fact]
-        public void AddTodos_ShouldOK()
+        public void AddTodo_ShouldOK()
         {
             //Arrange
             var todoService = new Mock<ITodoService>();
             var controller = new TodoController(todoService.Object, CommonMocks.SessionData);
+            todoService.Setup(service => service.AddTodo(CommonMocks.SessionData.UserId, It.IsAny<TodoItemBody>())).Returns(Result.Ok());
             //Act
             var result = controller.AddTodo(TodoMocks.addTodoReqeust) as IStatusCodeActionResult;
             //Assert
@@ -48,11 +49,13 @@ namespace Todo.Test.Api
             result?.StatusCode.Should().Be(200);
         }
         [Fact]
-        public void UpdateTodos_ShouldOK()
+        public void UpdateTodo_ShouldOK()
         {
             //Arrange
             var todoService = new Mock<ITodoService>();
             var controller = new TodoController(todoService.Object, CommonMocks.SessionData);
+            todoService.Setup(service => service.UpdateTodo(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<TodoItemBody>()))
+                .Returns(Result.Ok(TodoMocks.todoItem));
             //Act
             var result = controller.UpdateTodo(TodoMocks.todoItem.Id, TodoMocks.updateTodoRequest) as IStatusCodeActionResult;
             //Assert
@@ -65,6 +68,8 @@ namespace Todo.Test.Api
             //Arrange
             var todoService = new Mock<ITodoService>();
             var controller = new TodoController(todoService.Object, CommonMocks.SessionData);
+            todoService.Setup(service => service.RemoveTodo(It.IsAny<Guid>()))
+               .Returns(Result.Ok(true));
             //Act
             var result = controller.DeleteTodo(TodoMocks.todoItem.Id) as IStatusCodeActionResult;
             //Assert
